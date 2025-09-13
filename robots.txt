@@ -16,5 +16,5 @@ Allow: /script.js
 Allow: /Pictures/
 Allow: /favicon_io/
 
-# Note: Add sitemap when domain is live
-# Sitemap: https://fencodestudio.com/sitemap.xml
+# Sitemap
+Sitemap: https://fencodestudio.com/sitemap.xml
