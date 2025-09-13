@@ -123,51 +123,97 @@ function animateCounter(element) {
 
 // Initialize Calendly widget
 function initializeCalendly() {
+    const widget = document.querySelector('.calendly-inline-widget');
+    const loadingElement = document.querySelector('.calendly-loading');
+    
+    if (!widget) return;
+    
     // Check if Calendly is loaded
     if (typeof Calendly !== 'undefined') {
-        // Calendly is already loaded, initialize the widget
-        const widget = document.querySelector('.calendly-inline-widget');
-        const loadingElement = document.querySelector('.calendly-loading');
-        
-        if (widget) {
+        try {
             // Hide loading state
             if (loadingElement) {
                 loadingElement.style.display = 'none';
             }
             
-            // Initialize the widget
+            // Clear any existing content
+            widget.innerHTML = '';
+            
+            // Initialize the widget with proper error handling
             Calendly.initInlineWidget({
                 url: 'https://calendly.com/vizioneer/30min?hide_event_type_details=1&hide_gdpr_banner=1',
                 parentElement: widget,
                 prefill: {},
                 utm: {}
             });
+            
+            console.log('Calendly widget initialized successfully');
+        } catch (error) {
+            console.error('Calendly initialization error:', error);
+            showCalendlyError();
         }
     } else {
         // Calendly not loaded yet, wait and retry
-        setTimeout(initializeCalendly, 100);
+        setTimeout(initializeCalendly, 200);
+    }
+}
+
+// Show error state for Calendly
+function showCalendlyError() {
+    const widget = document.querySelector('.calendly-inline-widget');
+    const loadingElement = document.querySelector('.calendly-loading');
+    
+    if (widget) {
+        widget.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; height: 700px; background: #f8f9fa; border-radius: 8px; text-align: center; padding: 20px;">
+                <div>
+                    <h3 style="color: #e74c3c; margin-bottom: 16px;">Calendar Temporarily Unavailable</h3>
+                    <p style="color: #666; margin-bottom: 24px;">Please try refreshing the page or click the button below to open the calendar in a new tab.</p>
+                    <a href="https://calendly.com/vizioneer/30min" target="_blank" style="background: #4CAF50; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; display: inline-block; margin-right: 12px;">
+                        Open Calendar
+                    </a>
+                    <button onclick="location.reload()" style="background: #007bff; color: white; padding: 12px 24px; border-radius: 6px; border: none; cursor: pointer;">
+                        Refresh Page
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    
+    if (loadingElement) {
+        loadingElement.style.display = 'none';
     }
 }
 
 // Initialize Calendly when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    // Wait a bit for Calendly script to load
-    setTimeout(initializeCalendly, 500);
+    let initAttempts = 0;
+    const maxAttempts = 50; // Try for up to 10 seconds (50 * 200ms)
     
-    // Fallback: if Calendly doesn't load after 10 seconds, show error message
-    setTimeout(function() {
-        const loadingElement = document.querySelector('.calendly-loading');
-        if (loadingElement && loadingElement.style.display !== 'none') {
-            loadingElement.innerHTML = `
-                <div style="text-align: center;">
-                    <p style="color: #e74c3c; margin: 0 0 16px;">Unable to load calendar</p>
-                    <a href="https://calendly.com/vizioneer/30min" target="_blank" style="background: #4CAF50; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; display: inline-block;">
-                        Open Calendar in New Tab
-                    </a>
-                </div>
-            `;
+    function tryInitializeCalendly() {
+        initAttempts++;
+        
+        if (typeof Calendly !== 'undefined') {
+            initializeCalendly();
+        } else if (initAttempts < maxAttempts) {
+            setTimeout(tryInitializeCalendly, 200);
+        } else {
+            // Final fallback after max attempts
+            showCalendlyError();
         }
-    }, 10000);
+    }
+    
+    // Start trying to initialize
+    setTimeout(tryInitializeCalendly, 300);
+    
+    // Also try when the Calendly script loads (for external referrers)
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            if (typeof Calendly !== 'undefined') {
+                initializeCalendly();
+            }
+        }, 1000);
+    });
 });
 
 // Notification system
