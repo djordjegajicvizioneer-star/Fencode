@@ -141,7 +141,7 @@ function initializeCalendly() {
             
             // Initialize the widget with proper error handling
             Calendly.initInlineWidget({
-                url: 'https://calendly.com/vizioneer/30min?hide_event_type_details=1&hide_gdpr_banner=1',
+                url: 'https://calendly.com/fencodestudio/30min',
                 parentElement: widget,
                 prefill: {},
                 utm: {}
@@ -169,7 +169,7 @@ function showCalendlyError() {
                 <div>
                     <h3 style="color: #e74c3c; margin-bottom: 16px;">Calendar Temporarily Unavailable</h3>
                     <p style="color: #666; margin-bottom: 24px;">Please try refreshing the page or click the button below to open the calendar in a new tab.</p>
-                    <a href="https://calendly.com/vizioneer/30min" target="_blank" style="background: #4CAF50; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; display: inline-block; margin-right: 12px;">
+                    <a href="https://calendly.com/fencodestudio/30min" target="_blank" style="background: #4CAF50; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; display: inline-block; margin-right: 12px;">
                         Open Calendar
                     </a>
                     <button onclick="location.reload()" style="background: #007bff; color: white; padding: 12px 24px; border-radius: 6px; border: none; cursor: pointer;">
